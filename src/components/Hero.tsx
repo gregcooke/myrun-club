@@ -1,7 +1,20 @@
 'use client'
 
 import { useState } from 'react'
-import { Search } from 'lucide-react'
+
+const sm: React.CSSProperties = {
+  fontFamily: 'var(--font-space)',
+  fontSize: 10,
+  letterSpacing: '0.08em',
+  textTransform: 'uppercase',
+}
+
+const STATS = [
+  { label: 'Clubs mapped', value: '214', color: '#C8F135' },
+  { label: 'Routes logged', value: '1.2k', color: '#C8F135' },
+  { label: 'Runners signed up', value: '38k', color: '#C8F135' },
+  { label: 'Boroughs covered', value: '32', color: '#C8F135' },
+]
 
 export default function Hero({ city }: { city: string }) {
   const [postcode, setPostcode] = useState('')
@@ -11,58 +24,108 @@ export default function Hero({ city }: { city: string }) {
     document.getElementById('map')?.scrollIntoView({ behavior: 'smooth' })
   }
 
-  const cityLabel = city.charAt(0).toUpperCase() + city.slice(1)
-
   return (
-    <section className="relative min-h-[85vh] flex items-center bg-white overflow-hidden">
-      <div
-        className="absolute inset-0 opacity-[0.025]"
-        style={{
-          backgroundImage: `repeating-linear-gradient(0deg, #000 0, #000 1px, transparent 0, transparent 50%), repeating-linear-gradient(90deg, #000 0, #000 1px, transparent 0, transparent 50%)`,
-          backgroundSize: '40px 40px',
-        }}
-      />
+    <section
+      style={{
+        padding: '52px 24px 44px',
+        borderBottom: '1px solid #1C1C1C',
+        background: '#0C0C0C',
+        display: 'grid',
+        gridTemplateColumns: '1.1fr 0.9fr',
+        gap: 32,
+        alignItems: 'end',
+      }}
+    >
+      <div>
+        {/* Eyebrow */}
+        <div style={{ ...sm, color: '#444', marginBottom: 18, display: 'flex', alignItems: 'center', gap: 8 }}>
+          <span style={{ width: 6, height: 6, borderRadius: '50%', background: '#C8F135', display: 'inline-block', flexShrink: 0 }} />
+          {city.charAt(0).toUpperCase() + city.slice(1)} — run culture, mapped
+        </div>
 
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 w-full">
-        <p
-          className="text-xs font-semibold tracking-widest uppercase mb-6"
-          style={{ color: '#E24B4A' }}
+        {/* Headline */}
+        <div
+          style={{
+            fontFamily: 'var(--font-bebas)',
+            fontSize: 'clamp(64px, 10vw, 80px)',
+            lineHeight: 0.9,
+            color: '#F0EFE9',
+            marginBottom: 18,
+          }}
         >
-          {cityLabel}
+          Find<br />your<br />people.<br />
+          <em style={{ color: '#FF4500', fontStyle: 'normal', display: 'block' }}>Your route.</em>
+        </div>
+
+        <p style={{ fontSize: 13, color: '#555', lineHeight: 1.7, fontWeight: 300, maxWidth: 280, marginBottom: 24 }}>
+          Every run club, every borough, every vibe. London runs together.
         </p>
 
-        <h1 className="text-5xl sm:text-6xl lg:text-8xl font-bold tracking-tight text-zinc-900 leading-none mb-6">
-          Find your people.
-          <br />
-          <span className="text-zinc-200">Find your route.</span>
-        </h1>
-
-        <p className="text-lg text-zinc-500 max-w-lg mb-12 leading-relaxed">
-          Every run club. Every borough. Every vibe. All in one place.
-        </p>
-
-        <form onSubmit={handleSearch} className="flex gap-2 max-w-md">
-          <div className="flex-1 relative">
-            <Search
-              className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-400 pointer-events-none"
-              size={16}
-            />
-            <input
-              type="text"
-              value={postcode}
-              onChange={(e) => setPostcode(e.target.value.toUpperCase())}
-              placeholder="Enter your postcode"
-              className="w-full pl-10 pr-4 py-3.5 rounded-full border border-zinc-200 text-sm font-medium focus:outline-none focus:border-zinc-400 bg-white"
-            />
-          </div>
+        {/* Search */}
+        <form
+          onSubmit={handleSearch}
+          style={{
+            display: 'flex',
+            border: '1px solid #2A2A2A',
+            borderRadius: 2,
+            overflow: 'hidden',
+            maxWidth: 360,
+          }}
+        >
+          <input
+            type="text"
+            value={postcode}
+            onChange={(e) => setPostcode(e.target.value.toUpperCase())}
+            placeholder="Postcode or area..."
+            style={{
+              flex: 1,
+              background: 'transparent',
+              border: 'none',
+              padding: '11px 14px',
+              color: '#F0EFE9',
+              fontSize: 13,
+              fontWeight: 300,
+              outline: 'none',
+            }}
+          />
           <button
             type="submit"
-            className="px-6 py-3.5 rounded-full text-sm font-semibold text-white transition-opacity hover:opacity-90 whitespace-nowrap"
-            style={{ backgroundColor: '#E24B4A' }}
+            style={{
+              background: '#FF4500',
+              border: 'none',
+              padding: '11px 16px',
+              color: '#fff',
+              fontFamily: 'var(--font-space)',
+              fontSize: 10,
+              letterSpacing: '0.08em',
+              textTransform: 'uppercase',
+              cursor: 'pointer',
+            }}
           >
             Find clubs
           </button>
         </form>
+      </div>
+
+      {/* Stats box */}
+      <div style={{ border: '1px solid #1C1C1C', borderRadius: 2, overflow: 'hidden' }}>
+        {STATS.map((s, i) => (
+          <div
+            key={s.label}
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              padding: '13px 18px',
+              borderBottom: i < STATS.length - 1 ? '1px solid #1C1C1C' : 'none',
+            }}
+          >
+            <span style={{ ...sm, color: '#444' }}>{s.label}</span>
+            <span style={{ fontFamily: 'var(--font-bebas)', fontSize: 26, color: s.color, lineHeight: 1 }}>
+              {s.value}
+            </span>
+          </div>
+        ))}
       </div>
     </section>
   )

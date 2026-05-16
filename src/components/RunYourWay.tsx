@@ -2,10 +2,10 @@
 
 import { useEffect, useState } from 'react'
 
-const LAUNCH_DATE = new Date('2025-08-01T00:00:00Z')
+const LAUNCH = new Date('2025-08-01T19:00:00Z')
 
 function getTimeLeft() {
-  const diff = LAUNCH_DATE.getTime() - Date.now()
+  const diff = LAUNCH.getTime() - Date.now()
   if (diff <= 0) return null
   return {
     days: Math.floor(diff / 86400000),
@@ -13,6 +13,13 @@ function getTimeLeft() {
     minutes: Math.floor((diff % 3600000) / 60000),
     seconds: Math.floor((diff % 60000) / 1000),
   }
+}
+
+const sm: React.CSSProperties = {
+  fontFamily: 'var(--font-space)',
+  fontSize: 10,
+  letterSpacing: '0.08em',
+  textTransform: 'uppercase' as const,
 }
 
 export default function RunYourWay() {
@@ -46,98 +53,262 @@ export default function RunYourWay() {
   }
 
   return (
-    <section id="runway" className="py-24" style={{ backgroundColor: '#0A0A14' }}>
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="max-w-2xl">
-          <p className="text-xs font-semibold tracking-widest uppercase mb-6" style={{ color: '#E24B4A' }}>
-            Run(Your)Way
-          </p>
+    <section id="runway" style={{ background: '#080808', borderBottom: '1px solid #1C1C1C' }}>
+      {/* Header */}
+      <div
+        style={{
+          display: 'flex',
+          alignItems: 'flex-end',
+          justifyContent: 'space-between',
+          padding: '32px 24px 20px',
+        }}
+      >
+        <div>
+          <div style={{ ...sm, fontSize: 9, color: '#333', marginBottom: 10 }}>
+            Coming — 1 Aug 2025 · London
+          </div>
+          <div
+            style={{
+              fontFamily: 'var(--font-bebas)',
+              fontSize: 'clamp(48px, 8vw, 60px)',
+              lineHeight: 0.88,
+              color: '#F0EFE9',
+            }}
+          >
+            Run<em style={{ color: '#FF4500', fontStyle: 'italic' }}>(Your)</em>Way
+          </div>
+        </div>
+        <div style={{ fontSize: 12, color: '#444', fontWeight: 300, lineHeight: 1.7, maxWidth: 200, textAlign: 'right' }}>
+          London's first community run club fashion show. Club merch. Brand drops. Street meets track. One night only.
+        </div>
+      </div>
 
-          <h2 className="text-4xl sm:text-5xl font-bold text-white mb-6 leading-tight">
-            The run event you've
-            <br />
-            been waiting for.
-          </h2>
+      {/* Editorial grid */}
+      <div
+        style={{
+          display: 'grid',
+          gridTemplateColumns: '1.4fr 0.6fr',
+          gap: 2,
+          padding: '0 24px 20px',
+        }}
+      >
+        {/* Main panel */}
+        <div
+          style={{
+            background: '#141414',
+            border: '1px solid #1C1C1C',
+            borderRadius: 2,
+            minHeight: 260,
+            position: 'relative',
+            overflow: 'hidden',
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'flex-end',
+            padding: 18,
+          }}
+        >
+          <div
+            style={{
+              position: 'absolute',
+              inset: 0,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              flexDirection: 'column',
+              gap: 4,
+            }}
+          >
+            <div style={{ ...sm, fontSize: 9, color: '#1C1C1C' }}>Editorial image / GIF goes here</div>
+          </div>
+          <div className="flash-anim" style={{ position: 'absolute', inset: 0, background: '#fff', opacity: 0 }} />
+          <div style={{ position: 'relative', zIndex: 2 }}>
+            <div style={{ ...sm, fontSize: 8, color: '#FF4500', letterSpacing: '0.12em', marginBottom: 4 }}>
+              Look 01 — East London
+            </div>
+            <div style={{ fontFamily: 'var(--font-bebas)', fontSize: 20, color: '#F0EFE9', lineHeight: 1 }}>
+              Streets to starting line
+            </div>
+          </div>
+        </div>
 
-          <p className="text-zinc-400 text-lg mb-12 leading-relaxed">
-            Multi-city. Multi-culture. Your pace, your style. Run(Your)Way is a fashion-forward run
-            event series launching across London, Cape Town and Amsterdam.
-          </p>
-
-          <div className="mb-12">
-            {timeLeft ? (
-              <div>
-                <p className="text-zinc-500 text-sm mb-5">Launching in</p>
-                <div className="flex gap-8">
-                  {(
-                    [
-                      { label: 'Days', value: timeLeft.days },
-                      { label: 'Hrs', value: timeLeft.hours },
-                      { label: 'Mins', value: timeLeft.minutes },
-                      { label: 'Secs', value: timeLeft.seconds },
-                    ] as const
-                  ).map(({ label, value }) => (
-                    <div key={label}>
-                      <div className="text-4xl font-bold text-white tabular-nums">
-                        {String(value).padStart(2, '0')}
-                      </div>
-                      <div className="text-xs text-zinc-600 mt-1">{label}</div>
-                    </div>
-                  ))}
-                </div>
+        {/* Side panels */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+          <div
+            style={{
+              background: '#111',
+              border: '1px solid #1C1C1C',
+              borderRadius: 2,
+              minHeight: 126,
+              position: 'relative',
+              overflow: 'hidden',
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'flex-end',
+              padding: 12,
+            }}
+          >
+            <div
+              className="flare-anim"
+              style={{
+                position: 'absolute',
+                width: 50,
+                height: 50,
+                borderRadius: '50%',
+                background: '#fff',
+                top: '15%',
+                left: '55%',
+                opacity: 0,
+              }}
+            />
+            <div style={{ position: 'relative', zIndex: 2 }}>
+              <div style={{ ...sm, fontSize: 8, color: '#FF4500', marginBottom: 2 }}>Look 02</div>
+              <div style={{ fontFamily: 'var(--font-bebas)', fontSize: 16, color: '#F0EFE9', lineHeight: 1 }}>
+                High vis, high fashion
               </div>
-            ) : (
-              <div
-                className="inline-flex items-center gap-2 px-4 py-2 rounded-full border"
-                style={{ borderColor: 'rgba(226,75,74,0.3)', backgroundColor: 'rgba(226,75,74,0.08)' }}
-              >
+            </div>
+          </div>
+          <div
+            style={{
+              background: '#0F0F0F',
+              border: '1px solid #1C1C1C',
+              borderRadius: 2,
+              minHeight: 126,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              textAlign: 'center',
+            }}
+          >
+            <div>
+              <div style={{ ...sm, fontSize: 8, color: '#2A2A2A', marginBottom: 6 }}>Club collab drop</div>
+              <div style={{ fontFamily: 'var(--font-bebas)', fontSize: 26, color: '#F0EFE9', lineHeight: 1 }}>
+                Merch<br />drops<br />here
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Countdown + form */}
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, padding: '0 24px 32px' }}>
+        {/* Countdown */}
+        <div
+          style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(4,1fr)',
+            gap: 1,
+            border: '1px solid #1C1C1C',
+            borderRadius: 2,
+            overflow: 'hidden',
+          }}
+        >
+          {timeLeft
+            ? [
+                { label: 'days', value: timeLeft.days },
+                { label: 'hrs', value: timeLeft.hours },
+                { label: 'min', value: timeLeft.minutes },
+                { label: 'sec', value: timeLeft.seconds },
+              ].map(({ label, value }, i) => (
                 <div
-                  className="w-2 h-2 rounded-full animate-pulse"
-                  style={{ backgroundColor: '#E24B4A' }}
-                />
-                <span className="text-sm font-semibold" style={{ color: '#E24B4A' }}>
-                  Now live
-                </span>
+                  key={label}
+                  style={{
+                    padding: 12,
+                    background: '#0C0C0C',
+                    textAlign: 'center',
+                    borderRight: i < 3 ? '1px solid #1C1C1C' : 'none',
+                  }}
+                >
+                  <div style={{ fontFamily: 'var(--font-bebas)', fontSize: 30, color: '#FF4500', lineHeight: 1 }}>
+                    {String(value).padStart(2, '0')}
+                  </div>
+                  <div style={{ ...sm, fontSize: 8, color: '#333', marginTop: 2 }}>{label}</div>
+                </div>
+              ))
+            : (
+              <div style={{ gridColumn: '1/-1', padding: 12, textAlign: 'center', background: '#0C0C0C' }}>
+                <div style={{ ...sm, color: '#FF4500' }}>Now live</div>
               </div>
             )}
-          </div>
-
-          {status === 'success' ? (
-            <div className="p-6 rounded-2xl border border-zinc-800 text-center">
-              <p className="text-white font-semibold mb-1">You&apos;re in.</p>
-              <p className="text-zinc-500 text-sm">We&apos;ll be in touch before launch day.</p>
-            </div>
-          ) : (
-            <form onSubmit={handleSubmit} className="flex flex-col gap-3 max-w-md">
-              <input
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="Email address"
-                required
-                className="px-4 py-3.5 rounded-full border border-zinc-800 bg-white/5 text-white placeholder:text-zinc-600 text-sm focus:outline-none focus:border-zinc-600"
-              />
-              <input
-                type="tel"
-                value={whatsapp}
-                onChange={(e) => setWhatsapp(e.target.value)}
-                placeholder="WhatsApp number (optional)"
-                className="px-4 py-3.5 rounded-full border border-zinc-800 bg-white/5 text-white placeholder:text-zinc-600 text-sm focus:outline-none focus:border-zinc-600"
-              />
-              <button
-                type="submit"
-                disabled={status === 'loading'}
-                className="px-6 py-3.5 rounded-full text-sm font-semibold text-white transition-opacity hover:opacity-90 disabled:opacity-50"
-                style={{ backgroundColor: '#E24B4A' }}
-              >
-                {status === 'loading' ? 'Joining...' : 'Get early access'}
-              </button>
-              {status === 'error' && (
-                <p className="text-red-400 text-xs text-center">Something went wrong. Try again.</p>
-              )}
-            </form>
-          )}
         </div>
+
+        {/* Sign-up form */}
+        {status === 'success' ? (
+          <div
+            style={{
+              border: '1px solid #1C1C1C',
+              borderRadius: 2,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              flexDirection: 'column',
+              gap: 4,
+              padding: 16,
+            }}
+          >
+            <div style={{ color: '#F0EFE9', fontWeight: 500 }}>You&apos;re in.</div>
+            <div style={{ ...sm, fontSize: 9, color: '#555' }}>We&apos;ll be in touch.</div>
+          </div>
+        ) : (
+          <form onSubmit={handleSubmit} style={{ border: '1px solid #1C1C1C', borderRadius: 2, overflow: 'hidden' }}>
+            <input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="Email address"
+              required
+              style={{
+                width: '100%',
+                background: 'transparent',
+                border: 'none',
+                borderBottom: '1px solid #1C1C1C',
+                padding: '11px 14px',
+                color: '#F0EFE9',
+                fontSize: 12,
+                fontWeight: 300,
+                outline: 'none',
+                display: 'block',
+              }}
+            />
+            <input
+              type="tel"
+              value={whatsapp}
+              onChange={(e) => setWhatsapp(e.target.value)}
+              placeholder="WhatsApp (+44...)"
+              style={{
+                width: '100%',
+                background: 'transparent',
+                border: 'none',
+                borderBottom: '1px solid #1C1C1C',
+                padding: '11px 14px',
+                color: '#F0EFE9',
+                fontSize: 12,
+                fontWeight: 300,
+                outline: 'none',
+                display: 'block',
+              }}
+            />
+            <button
+              type="submit"
+              disabled={status === 'loading'}
+              style={{
+                width: '100%',
+                background: '#FF4500',
+                border: 'none',
+                padding: 12,
+                color: '#fff',
+                fontFamily: 'var(--font-space)',
+                fontSize: 10,
+                letterSpacing: '0.1em',
+                textTransform: 'uppercase',
+                cursor: 'pointer',
+                display: 'block',
+                opacity: status === 'loading' ? 0.6 : 1,
+              }}
+            >
+              {status === 'loading' ? 'Joining...' : 'Get early access →'}
+            </button>
+          </form>
+        )}
       </div>
     </section>
   )

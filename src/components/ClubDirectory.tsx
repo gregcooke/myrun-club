@@ -1,249 +1,131 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { MapPin, Calendar, Users } from 'lucide-react'
 import { supabase } from '@/lib/supabase'
 
 type Club = {
-  id: string
-  name: string
-  borough: string
-  pace: string
-  vibe: string
-  day: string
-  meeting_point: string
-  description: string
-  instagram: string
+  id: string; name: string; borough: string; pace: string
+  vibe: string; day: string; meeting_point: string; description: string; instagram: string
 }
 
 const PLACEHOLDER: Club[] = [
-  {
-    id: '1',
-    name: 'Shoreditch Running Club',
-    borough: 'Hackney',
-    pace: 'Moderate',
-    vibe: 'Social',
-    day: 'Wednesday',
-    meeting_point: 'Shoreditch High Street Station',
-    description: "East London's most social run crew. 5K every Wednesday, drinks after.",
-    instagram: '@shoreditchrc',
-  },
-  {
-    id: '2',
-    name: 'Peckham Rye Runners',
-    borough: 'Southwark',
-    pace: 'Easy',
-    vibe: 'Beginner-friendly',
-    day: 'Saturday',
-    meeting_point: 'Peckham Rye Park Gates',
-    description: 'Welcoming all paces. South London vibes only.',
-    instagram: '@peckhamrye_run',
-  },
-  {
-    id: '3',
-    name: 'Run Dem Crew',
-    borough: 'Islington',
-    pace: 'Mixed',
-    vibe: 'Fashion',
-    day: 'Tuesday',
-    meeting_point: 'Angel Station',
-    description: 'The original London run crew. Culture, music, movement.',
-    instagram: '@rundemcrew',
-  },
-  {
-    id: '4',
-    name: 'Tracksmith London',
-    borough: 'Westminster',
-    pace: 'Fast',
-    vibe: 'Training',
-    day: 'Thursday',
-    meeting_point: "Regent's Park Athletics Track",
-    description: 'Serious training runs for those chasing PBs.',
-    instagram: '@tracksmith',
-  },
-  {
-    id: '5',
-    name: 'Brixton Road Runners',
-    borough: 'Lambeth',
-    pace: 'Moderate',
-    vibe: 'Social',
-    day: 'Sunday',
-    meeting_point: 'Windrush Square',
-    description: 'South of the river sunrise runs every Sunday.',
-    instagram: '@brixtonroadrunners',
-  },
-  {
-    id: '6',
-    name: 'Victoria Park Striders',
-    borough: 'Hackney',
-    pace: 'Fast',
-    vibe: 'Training',
-    day: 'Monday',
-    meeting_point: 'Victoria Park Bandstand',
-    description: 'Year-round training focused on the Hackney Half Marathon.',
-    instagram: '@vpcstriders',
-  },
+  { id: '1', name: 'East Run Co.', borough: 'Hackney', pace: 'Social', vibe: 'Social', day: 'Tue + Fri', meeting_point: 'Shoreditch', description: "East London's most social crew. 5K every week, drinks after.", instagram: '@eastrunco' },
+  { id: '2', name: 'South Circular', borough: 'Lambeth', pace: 'Tempo', vibe: 'Training', day: 'Wednesday', meeting_point: 'Clapham', description: 'Structured 10K training runs for those building mileage.', instagram: '@southcircular' },
+  { id: '3', name: 'Night Lights LDN', borough: 'City', pace: 'Social', vibe: 'Night runs', day: 'Thu 9pm', meeting_point: 'City of London', description: 'Night running with a DJ and an afterparty. Lit routes only.', instagram: '@nightlightsldn' },
+  { id: '4', name: 'Vicky Park Runners', borough: 'Hackney', pace: 'Easy', vibe: 'Social', day: 'Sunday', meeting_point: 'Victoria Park', description: 'Long Sunday runs followed by brunch. All welcome.', instagram: '@vickypark' },
+  { id: '5', name: 'North London RC', borough: 'Islington', pace: 'Fast', vibe: 'Competitive', day: 'Tue + Thu', meeting_point: 'Angel', description: '5K pace focused sessions. Track access twice a week.', instagram: '@northlondonrc' },
+  { id: '6', name: 'Brixton Run Crew', borough: 'Lambeth', pace: 'Mixed', vibe: 'Inclusive', day: 'Wed + Sun', meeting_point: 'Brixton', description: "South London's most inclusive crew. All paces, all backgrounds.", instagram: '@brixtonruncrew' },
 ]
 
-const PACES = ['All', 'Easy', 'Moderate', 'Fast', 'Mixed']
-const VIBES = ['All', 'Social', 'Training', 'Fashion', 'Beginner-friendly', 'Competitive']
-const DAYS = ['All', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
+const FILTERS = ['All', 'Hackney', 'Lambeth', 'Islington', 'Southwark', 'Social', 'Tempo', 'Night runs']
+
+const sm: React.CSSProperties = { fontFamily: 'var(--font-space)', fontSize: 9, letterSpacing: '0.06em', textTransform: 'uppercase' as const }
 
 export default function ClubDirectory({ city }: { city: string }) {
   const [clubs, setClubs] = useState<Club[]>([])
-  const [boroughs, setBoroughs] = useState<string[]>(['All'])
-  const [borough, setBorough] = useState('All')
-  const [pace, setPace] = useState('All')
-  const [vibe, setVibe] = useState('All')
-  const [day, setDay] = useState('All')
+  const [active, setActive] = useState('All')
 
   useEffect(() => {
-    supabase
-      .from('clubs')
-      .select('*')
-      .eq('city', city)
-      .then(({ data }) => {
-        const list = data && data.length > 0 ? (data as Club[]) : PLACEHOLDER
-        setClubs(list)
-        setBoroughs(['All', ...Array.from(new Set(list.map((c) => c.borough)))])
-      })
+    supabase.from('clubs').select('*').eq('city', city).then(({ data }) => {
+      setClubs(data && data.length > 0 ? (data as Club[]) : PLACEHOLDER)
+    })
   }, [city])
 
-  const filtered = clubs.filter(
-    (c) =>
-      (borough === 'All' || c.borough === borough) &&
-      (pace === 'All' || c.pace === pace) &&
-      (vibe === 'All' || c.vibe === vibe) &&
-      (day === 'All' || c.day === day)
+  const filtered = active === 'All' ? clubs : clubs.filter(c =>
+    c.borough === active || c.pace === active || c.vibe === active
   )
 
-  const resetFilters = () => {
-    setBorough('All')
-    setPace('All')
-    setVibe('All')
-    setDay('All')
-  }
-
   return (
-    <section id="clubs" className="py-16 bg-white">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="mb-10">
-          <p
-            className="text-sm font-semibold tracking-widest uppercase mb-2"
-            style={{ color: '#E24B4A' }}
+    <section id="clubs" style={{ padding: '32px 0 32px 24px', borderBottom: '1px solid #DDD8CE', background: '#F2EDE4' }}>
+      <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', paddingRight: 24, marginBottom: 4 }}>
+        <div style={{ fontFamily: 'var(--font-bebas)', fontSize: 36, color: '#0C0C0C', lineHeight: 1 }}>Run clubs</div>
+        <div style={{ ...sm, color: '#AAA' }}>{filtered.length} clubs · updated weekly</div>
+      </div>
+
+      <div style={{ ...sm, color: '#AAA', paddingRight: 24, marginBottom: 12 }}>London — drag to explore →</div>
+
+      {/* Filters */}
+      <div style={{ display: 'flex', gap: 6, paddingRight: 24, marginBottom: 18, flexWrap: 'wrap' }}>
+        {FILTERS.map((f) => (
+          <button
+            key={f}
+            onClick={() => setActive(f)}
+            style={{
+              ...sm,
+              padding: '5px 10px',
+              border: `1px solid ${active === f ? '#0C0C0C' : '#C8C3BA'}`,
+              color: active === f ? '#0C0C0C' : '#999',
+              borderRadius: 2,
+              cursor: 'pointer',
+              background: 'transparent',
+            }}
           >
-            Directory
-          </p>
-          <h2 className="text-3xl font-bold text-zinc-900 mb-1">Every London run club</h2>
-          <p className="text-zinc-400 text-sm">{filtered.length} clubs · updated weekly</p>
-        </div>
+            {f}
+          </button>
+        ))}
+      </div>
 
-        <div className="flex flex-col gap-4 mb-10">
-          <FilterRow label="Borough" options={boroughs} value={borough} onChange={setBorough} />
-          <FilterRow label="Pace" options={PACES} value={pace} onChange={setPace} />
-          <FilterRow label="Vibe" options={VIBES} value={vibe} onChange={setVibe} />
-          <FilterRow label="Day" options={DAYS} value={day} onChange={setDay} />
-        </div>
-
-        {filtered.length === 0 ? (
-          <div className="text-center py-16">
-            <p className="text-zinc-400 mb-3">No clubs match your filters.</p>
-            <button
-              onClick={resetFilters}
-              className="text-sm font-medium underline"
-              style={{ color: '#E24B4A' }}
-            >
-              Clear all filters
-            </button>
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-            {filtered.map((club) => (
-              <ClubCard key={club.id} club={club} />
-            ))}
+      {/* Horizontal scroll */}
+      <div className="hscroll" style={{ paddingRight: 24 }}>
+        {/* Featured card */}
+        {filtered[0] && (
+          <div
+            style={{
+              flexShrink: 0, width: 190, background: '#0C0C0C', borderRadius: 2,
+              padding: 18, display: 'flex', flexDirection: 'column', justifyContent: 'space-between',
+              minHeight: 210, position: 'relative',
+            }}
+          >
+            <div style={{ position: 'absolute', top: 14, right: 14, width: 6, height: 6, borderRadius: '50%', background: '#FF4500' }} />
+            <div style={{ ...sm, fontSize: 9, color: '#C8F135', letterSpacing: '0.1em', marginBottom: 'auto' }}>Featured club</div>
+            <div>
+              <div style={{ fontFamily: 'var(--font-bebas)', fontSize: 30, color: '#F0EFE9', lineHeight: 1, marginBottom: 4 }}>{filtered[0].name}</div>
+              <div style={{ ...sm, color: '#555', marginBottom: 12 }}>{filtered[0].day} · {filtered[0].meeting_point}</div>
+              <div style={{ ...sm, padding: '4px 8px', border: '1px solid #FF4500', color: '#FF4500', borderRadius: 2, display: 'inline-block' }}>
+                {filtered[0].pace} · {filtered[0].vibe}
+              </div>
+            </div>
           </div>
         )}
+
+        {/* Club cards */}
+        {filtered.slice(1).map((club) => (
+          <div
+            key={club.id}
+            style={{
+              flexShrink: 0, width: 160, background: '#fff', border: '1px solid #E0DAD0',
+              borderRadius: 2, padding: 14, minHeight: 210, display: 'flex',
+              flexDirection: 'column', justifyContent: 'space-between',
+            }}
+          >
+            <div>
+              <div style={{ ...sm, fontSize: 8, padding: '3px 7px', border: '1px solid #E0DAD0', color: '#999', borderRadius: 2, display: 'inline-block', marginBottom: 8 }}>
+                {club.pace}
+              </div>
+              <div style={{ fontSize: 12, fontWeight: 500, color: '#0C0C0C', marginBottom: 4 }}>{club.name}</div>
+              <div style={{ ...sm, fontSize: 8, color: '#AAA', lineHeight: 1.7 }}>{club.day}<br />{club.meeting_point}</div>
+            </div>
+            <div style={{ display: 'flex', gap: 4, flexWrap: 'wrap' }}>
+              <span style={{ ...sm, fontSize: 8, padding: '3px 6px', border: '1px solid #FF4500', color: '#FF4500', borderRadius: 2 }}>{club.borough}</span>
+              <span style={{ ...sm, fontSize: 8, padding: '3px 6px', border: '1px solid #E0DAD0', color: '#AAA', borderRadius: 2 }}>{club.vibe}</span>
+            </div>
+          </div>
+        ))}
+
+        {/* Submit card */}
+        <div
+          style={{
+            flexShrink: 0, width: 140, border: '1px dashed #C8C3BA', borderRadius: 2,
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            flexDirection: 'column', gap: 8, minHeight: 210, padding: 14,
+          }}
+        >
+          <div style={{ ...sm, fontSize: 9, color: '#BBB', textAlign: 'center', lineHeight: 1.8 }}>Your club<br />missing?</div>
+          <button style={{ ...sm, fontSize: 9, color: '#FF4500', cursor: 'pointer', background: 'none', border: 'none', textDecoration: 'underline' }}>
+            Submit →
+          </button>
+        </div>
       </div>
     </section>
-  )
-}
-
-function FilterRow({
-  label,
-  options,
-  value,
-  onChange,
-}: {
-  label: string
-  options: string[]
-  value: string
-  onChange: (v: string) => void
-}) {
-  return (
-    <div className="flex flex-wrap items-center gap-2">
-      <span className="text-xs font-semibold text-zinc-400 uppercase tracking-wide w-14 shrink-0">
-        {label}
-      </span>
-      {options.map((opt) => (
-        <button
-          key={opt}
-          onClick={() => onChange(opt)}
-          className="px-3 py-1.5 rounded-full text-xs font-medium border transition-colors"
-          style={
-            value === opt
-              ? { backgroundColor: '#E24B4A', borderColor: '#E24B4A', color: 'white' }
-              : { borderColor: '#e4e4e7', color: '#52525b' }
-          }
-        >
-          {opt}
-        </button>
-      ))}
-    </div>
-  )
-}
-
-function ClubCard({ club }: { club: Club }) {
-  return (
-    <div className="border border-zinc-100 rounded-2xl p-6 hover:border-zinc-200 hover:shadow-sm transition-all">
-      <div className="flex items-start justify-between gap-2 mb-3">
-        <h3 className="font-semibold text-zinc-900 text-base leading-snug">{club.name}</h3>
-        <span
-          className="text-xs font-medium px-2 py-0.5 rounded-full shrink-0"
-          style={{ backgroundColor: '#FEE2E2', color: '#E24B4A' }}
-        >
-          {club.pace}
-        </span>
-      </div>
-
-      <p className="text-sm text-zinc-500 mb-4 leading-relaxed">{club.description}</p>
-
-      <div className="flex flex-col gap-1.5 text-xs text-zinc-400">
-        <div className="flex items-center gap-1.5">
-          <MapPin size={11} />
-          <span>
-            {club.borough} · {club.meeting_point}
-          </span>
-        </div>
-        <div className="flex items-center gap-1.5">
-          <Calendar size={11} />
-          <span>{club.day}</span>
-        </div>
-        <div className="flex items-center gap-1.5">
-          <Users size={11} />
-          <span>{club.vibe}</span>
-        </div>
-      </div>
-
-      {club.instagram && (
-        <a
-          href={`https://instagram.com/${club.instagram.replace('@', '')}`}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="mt-4 inline-block text-xs font-medium text-zinc-400 hover:text-zinc-600 transition-colors"
-        >
-          {club.instagram} →
-        </a>
-      )}
-    </div>
   )
 }
