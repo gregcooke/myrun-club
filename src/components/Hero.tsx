@@ -16,6 +16,8 @@ const STATS = [
   { label: 'Boroughs covered', value: '32', color: '#C8F135' },
 ]
 
+const LABEL_COLOR = '#AAA'
+
 export default function Hero({ city }: { city: string }) {
   const [postcode, setPostcode] = useState('')
 
@@ -71,7 +73,7 @@ export default function Hero({ city }: { city: string }) {
           <em style={{ color: '#FF4500', fontStyle: 'normal', display: 'block' }}>Your route.</em>
         </div>
 
-        <p style={{ fontSize: 13, color: '#555', lineHeight: 1.7, fontWeight: 300, maxWidth: 280, marginBottom: 24 }}>
+        <p style={{ fontSize: 13, color: '#888', lineHeight: 1.7, fontWeight: 300, maxWidth: 280, marginBottom: 24 }}>
           Every run club, every borough, every vibe. London runs together.
         </p>
 
@@ -122,7 +124,7 @@ export default function Hero({ city }: { city: string }) {
       </div>
 
       {/* Stats box */}
-      <div style={{ border: '1px solid #1C1C1C', borderRadius: 2, overflow: 'hidden', position: 'relative', zIndex: 1 }}>
+      <div style={{ border: '1px solid #333', borderRadius: 2, overflow: 'hidden', position: 'relative', zIndex: 1, background: 'rgba(12,12,12,0.75)', backdropFilter: 'blur(8px)' }}>
         {STATS.map((s, i) => (
           <div
             key={s.label}
@@ -131,10 +133,10 @@ export default function Hero({ city }: { city: string }) {
               alignItems: 'center',
               justifyContent: 'space-between',
               padding: '13px 18px',
-              borderBottom: i < STATS.length - 1 ? '1px solid #1C1C1C' : 'none',
+              borderBottom: i < STATS.length - 1 ? '1px solid #2A2A2A' : 'none',
             }}
           >
-            <span style={{ ...sm, color: '#444' }}>{s.label}</span>
+            <span style={{ ...sm, color: LABEL_COLOR }}>{s.label}</span>
             <span style={{ fontFamily: 'var(--font-bebas)', fontSize: 26, color: s.color, lineHeight: 1 }}>
               {s.value}
             </span>

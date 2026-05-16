@@ -2,25 +2,28 @@
 
 const PANELS = [
   {
-    time: '06:00 — Sunrise',
-    title: 'Victoria Park\nat first light',
-    loc: 'East London · E3',
-    src: 'https://images.unsplash.com/photo-1502224562085-639556652f33?w=600&h=900&fit=crop',
-    alt: 'morning run',
+    time: '07:00 — Morning',
+    title: 'Battersea Park\nmorning miles',
+    loc: 'South London · SW11',
+    src: '/images/morning.jpg',
+    alt: 'Morning run through Battersea Park',
+    position: 'center center',
   },
   {
     time: '12:00 — Midday',
     title: 'Embankment\nlunch break',
     loc: 'Central London · SE1',
     src: 'https://images.unsplash.com/photo-1571008887538-b36bb32f4571?w=600&h=900&fit=crop',
-    alt: 'day run',
+    alt: 'Midday run along the Embankment',
+    position: 'center center',
   },
   {
     time: '21:00 — Night',
     title: 'City lights,\nlit routes',
-    loc: 'City of London · EC1',
-    src: 'https://images.unsplash.com/photo-1508609349937-5ec4ae374ebf?w=600&h=900&fit=crop',
-    alt: 'night run',
+    loc: 'Central London · EC1',
+    src: '/images/night.jpg',
+    alt: 'Night run through central London',
+    position: 'center 40%',
   },
 ]
 
@@ -64,7 +67,7 @@ export default function PhotoStrip() {
             <img
               src={p.src}
               alt={p.alt}
-              style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }}
+              style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', objectPosition: p.position }}
               onError={(e) => ((e.target as HTMLImageElement).style.display = 'none')}
             />
             <div style={{ position: 'absolute', inset: 0, background: '#000', opacity: 0.45 }} />
