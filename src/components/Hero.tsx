@@ -34,9 +34,23 @@ export default function Hero({ city }: { city: string }) {
         gridTemplateColumns: '1.1fr 0.9fr',
         gap: 32,
         alignItems: 'end',
+        position: 'relative',
+        overflow: 'hidden',
       }}
     >
-      <div>
+      {/* Hero background image */}
+      <div
+        style={{
+          position: 'absolute',
+          inset: 0,
+          backgroundImage: 'url(/images/hero.jpg)',
+          backgroundSize: 'cover',
+          backgroundPosition: 'center 30%',
+          opacity: 0.12,
+          filter: 'grayscale(100%)',
+        }}
+      />
+      <div style={{ position: 'relative', zIndex: 1 }}>
         {/* Eyebrow */}
         <div style={{ ...sm, color: '#444', marginBottom: 18, display: 'flex', alignItems: 'center', gap: 8 }}>
           <span style={{ width: 6, height: 6, borderRadius: '50%', background: '#C8F135', display: 'inline-block', flexShrink: 0 }} />
@@ -108,7 +122,7 @@ export default function Hero({ city }: { city: string }) {
       </div>
 
       {/* Stats box */}
-      <div style={{ border: '1px solid #1C1C1C', borderRadius: 2, overflow: 'hidden' }}>
+      <div style={{ border: '1px solid #1C1C1C', borderRadius: 2, overflow: 'hidden', position: 'relative', zIndex: 1 }}>
         {STATS.map((s, i) => (
           <div
             key={s.label}
